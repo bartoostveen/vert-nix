@@ -228,8 +228,12 @@ in
 
   config = mkIf cfg.enable {
     warnings =
-      optional (cfg.nginx.enable && cfg.openFirewall && !cfg.suppressFirewallWarning)
-        "Vertd is already proxied through nginx, you should consider not exposing this port or suppressing it using services.vertd.suppressFirewallWarning = true;";
+      (optional (cfg.nginx.enable && cfg.openFirewall && !cfg.suppressFirewallWarning)
+        "Vertd is already proxied through nginx, you should consider not exposing this port or suppressing it using services.vertd.suppressFirewallWarning = true;"
+      )
+      ++ (optional (
+        cfg.settings.force_gpu == "nvidia" && !config.hardware.nvidia.enabled
+      ) "Vertd is forcibly using nvidia, but nvidia is currently disabled");
 
     services.vert =
       let
