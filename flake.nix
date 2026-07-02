@@ -59,7 +59,7 @@
             programs.nixfmt.enable = true;
             programs.deadnix = {
               enable = true;
-              excludes = [ "bun.nix" ];
+              excludes = [ "**/*/bun.nix" ];
             };
           };
 
