@@ -295,7 +295,10 @@ in
         ])
         {
           root = cfg.webPackage.override { env = webEnvironment; };
-          locations."/daemon/".proxyPass = "http://localhost:${toString cfg.port}/";
+          locations."/daemon/" = {
+            proxyPass = "http://localhost:${toString cfg.port}/";
+            proxyWebsockets = true;
+          };
         }
       ];
     };
