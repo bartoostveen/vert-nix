@@ -36,7 +36,7 @@ let
 in
 bun2nix.mkDerivation (finalAttrs: {
   pname = "vert";
-  version = "0-unstable-2026-01-29";
+  version = "0-unstable-2026-07-01";
 
   src = fetchFromGitHub {
     owner = "VERT-sh";
