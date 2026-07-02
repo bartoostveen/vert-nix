@@ -33,7 +33,7 @@
       { withSystem, lib, ... }:
 
       let
-        inherit (lib) getExe evalModules;
+        inherit (lib) getExe;
       in
       {
         systems = [
