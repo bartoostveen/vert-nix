@@ -37,3 +37,4 @@ devenv.local.nix
 
 input/
 output/
+/vert.qcow2

@@ -5,23 +5,30 @@
   nix-update-script,
   fetchFromGitHub,
   writeText,
-  env ? {
-    HOSTNAME = "localhost:5173";
-    PLAUSIBLE_URL = "https://plausible.example.com";
+  env ? { },
+  ...
+}:
+
+let
+  inherit (lib)
+    mapAttrsToList
+    recursiveUpdate
+    concatStringsSep
+    pipe
+    ;
+
+  finalEnv = recursiveUpdate {
+    HOSTNAME = "localhost";
+    PLAUSIBLE_URL = "";
     ENV = "production";
     VERTD_URL = "https://vertd.vert.sh";
     DISABLE_ALL_EXTERNAL_REQUESTS = "false";
     DISABLE_FAILURE_BLOCKS = "false";
     DONATION_URL = "https://donations.vert.sh";
     STRIPE_KEY = "pk_live_51TlrPaFTPjkhEGBSu5Kwy5jJQYxcX5yUUHXiH5g7Xzvb0NKzDqbooc126HjlW35uUkfAgQN2ruEoCuyQynoxpKaA00ojFgQ116";
-  },
-  ...
-}:
+  } env;
 
-let
-  inherit (lib) mapAttrsToList concatStringsSep pipe;
-
-  envFile = pipe env [
+  envFile = pipe finalEnv [
     (mapAttrsToList (k: v: "PUB_${k}=${v}"))
     (concatStringsSep "\n")
     (writeText "vert.env")

@@ -28,45 +28,113 @@
   };
 
   outputs =
-    inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "aarch64-darwin"
-      ];
+    inputs@{ self, flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } (
+      { withSystem, lib, ... }:
 
-      imports = [
-        inputs.treefmt-nix.flakeModule
-      ];
+      let
+        inherit (lib) getExe;
+      in
+      {
+        systems = [
+          "x86_64-linux"
+          "aarch64-linux"
+          "aarch64-darwin"
+        ];
 
-      perSystem =
-        {
-          pkgs,
-          system,
-          ...
-        }:
+        imports = [
+          inputs.treefmt-nix.flakeModule
+        ];
 
-        {
-          _module.args.pkgs = import inputs.nixpkgs {
-            inherit system;
-            overlays = [
-              inputs.bun2nix.overlays.default
-            ];
-          };
+        flake = {
+          nixosConfigurations.vm = withSystem "x86_64-linux" (
+            { pkgs, system, ... }:
 
-          treefmt = {
-            programs.nixfmt.enable = true;
-            programs.deadnix = {
-              enable = true;
-              excludes = [ "**/*/bun.nix" ];
+            inputs.nixpkgs.lib.nixosSystem {
+              inherit pkgs system;
+              modules = [
+                self.nixosModules.default
+                ./example.nix
+                "${inputs.nixpkgs}/nixos/modules/virtualisation/qemu-vm.nix"
+                {
+                  services.getty.autologinUser = "root";
+                  virtualisation = {
+                    forwardPorts = [
+                      {
+                        from = "host";
+                        host.port = 8080;
+                        guest.port = 80;
+                      }
+                    ];
+                  };
+                }
+              ];
+            }
+          );
+
+          nixosModules.default = ./module.nix;
+          overlays.default =
+            _final: prev:
+            withSystem prev.stdenv.hostPlatform.system (
+              { self', ... }: {
+                vert = self'.packages;
+              }
+            );
+        };
+
+        perSystem =
+          {
+            pkgs,
+            system,
+            ...
+          }:
+
+          {
+            _module.args.pkgs = import inputs.nixpkgs {
+              inherit system;
+              overlays = [
+                inputs.bun2nix.overlays.default
+                self.overlays.default
+              ];
+            };
+
+            apps.run-in-vm = {
+              type = "app";
+              program = getExe self.nixosConfigurations.vm.config.system.build.vm;
+            };
+
+            treefmt = {
+              programs.nixfmt.enable = true;
+              programs.deadnix = {
+                enable = true;
+                excludes = [ "**/*/bun.nix" ];
+              };
+            };
+
+            packages = {
+              web = pkgs.callPackage ./packages/web/package.nix { };
+              vertd = pkgs.callPackage ./packages/vertd/package.nix { };
+            };
+
+            checks.module = pkgs.testers.runNixOSTest {
+              name = "vertd";
+
+              nodes.machine = {
+                imports = [
+                  self.nixosModules.default
+                  ./example.nix
+                ];
+              };
+
+              # TODO: test if API works with ffmpeg and such
+              testScript = ''
+                start_all()
+                with subtest("start vertd"):
+                  machine.wait_for_unit("vertd.service")
+                  machine.wait_for_open_port(24153)
+              '';
             };
           };
-
-          packages = {
-            web = pkgs.callPackage ./packages/web/package.nix { };
-            vertd = pkgs.callPackage ./packages/vertd/package.nix { };
-          };
-        };
-    };
+      }
+    );
 }
