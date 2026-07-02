@@ -170,6 +170,12 @@ in
             default = null;
             example = "nvidia";
           };
+          public_url = mkOption {
+            description = "The (public) URL to vertd, used for keeping and sharing uploads";
+            type = nullOr str;
+            default = null;
+            example = "https://my.vert.example.com/daemon";
+          };
         };
       };
       default = { };
@@ -225,18 +231,23 @@ in
       optional (cfg.nginx.enable && cfg.openFirewall && !cfg.suppressFirewallWarning)
         "Vertd is already proxied through nginx, you should consider not exposing this port or suppressing it using services.vertd.suppressFirewallWarning = true;";
 
-    services.vert = {
-      webSettings = {
-        hostname = mkDefault cfg.hostName;
-        vertd.url = mkDefault (
+    services.vert =
+      let
+        vertdURL = (
           if cfg.nginx.enable then
             "http${optionalString cfg.nginx.forceSSL "s"}://${cfg.hostName}/daemon"
           else
             "http://${cfg.hostName}:${toString cfg.port}"
         );
+      in
+      {
+        webSettings = {
+          hostname = mkDefault cfg.hostName;
+          vertd.url = mkDefault vertdURL;
+        };
+        settings.public_url = mkDefault vertdURL;
+        nginx.serverName = mkDefault cfg.hostName;
       };
-      nginx.serverName = mkDefault cfg.hostName;
-    };
 
     systemd.services.vertd = {
       description = "vertd, The next-generation file converter. Open source, fully local* and free forever";
