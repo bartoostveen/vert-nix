@@ -33,7 +33,7 @@
       { withSystem, lib, ... }:
 
       let
-        inherit (lib) getExe;
+        inherit (lib) getExe evalModules;
       in
       {
         systems = [
@@ -89,6 +89,18 @@
             ...
           }:
 
+          let
+            docs = pkgs.nixosOptionsDoc {
+              options.services.vert =
+                (inputs.nixpkgs.lib.nixosSystem {
+                  inherit pkgs system;
+                  modules = [
+                    self.nixosModules.default
+                    { system.stateVersion = "26.11"; }
+                  ];
+                }).options.services.vert;
+            };
+          in
           {
             _module.args.pkgs = import inputs.nixpkgs {
               inherit system;
@@ -112,6 +124,7 @@
             };
 
             packages = {
+              _docs = pkgs.callPackage ./docs/package.nix { inherit docs; };
               web = pkgs.callPackage ./packages/web/package.nix { };
               vertd = pkgs.callPackage ./packages/vertd/package.nix { };
             };
