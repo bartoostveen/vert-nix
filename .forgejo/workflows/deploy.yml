@@ -9,7 +9,7 @@ jobs:
   publish:
     runs-on: [native-x86_64-linux, bigger-parallel]
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Build and push
         env:
           TARGET_SITE: ${{ github.ref_name == 'release' && 'https://nix-vert.bartoostveen.nl' || 'https://test.nix-vert.bartoostveen.nl' }}
@@ -25,7 +25,7 @@ jobs:
     runs-on: gpg
 
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Create release PR
         run: |
           set -euo pipefail
