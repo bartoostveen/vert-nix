@@ -36,13 +36,13 @@ let
 in
 bun2nix.mkDerivation (finalAttrs: {
   pname = "vert";
-  version = "0-unstable-2026-07-01";
+  version = "0-unstable-2026-08-10";
 
   src = fetchFromGitHub {
     owner = "VERT-sh";
     repo = "VERT";
-    rev = "e1c83ba4adf067c2ff60fa192e0cb029715d596a";
-    hash = "sha256-oJGIIZDRrJBVA8i/wViXris2XIRRygpHVDcrF9DSNC4=";
+    rev = "e0ffd34310f9c988b16e22334b13e18de030b0ae";
+    hash = "sha256-hHVr3KRKyx1reOr1KZPLEj3eDcA5qZLI0lWWcHBmPks=";
   };
 
   patches = [ ./bun.lock.patch ];
@@ -78,7 +78,7 @@ bun2nix.mkDerivation (finalAttrs: {
   '';
 
   passthru = {
-    updateScript = nix-update-script { };
+    updateScript = nix-update-script { extraArgs = [ "--version=branch=main" ]; };
     inherit envFile;
   };
 
