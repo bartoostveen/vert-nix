@@ -3,14 +3,15 @@
   rustPlatform,
   fetchFromGitHub,
   pkg-config,
+  openssl,
   vulkan-loader,
   zstd,
   nix-update-script,
 }:
 
-rustPlatform.buildRustPackage (finalAttrs: {
+rustPlatform.buildRustPackage {
   pname = "vertd";
-  version = "1.0";
+  version = "nightly-352463e1ae65a5afd87e250309656f4f2062d76a-unstable-2026-09-01";
 
   __structuredAttrs = true;
   strictDeps = true;
@@ -18,17 +19,18 @@ rustPlatform.buildRustPackage (finalAttrs: {
   src = fetchFromGitHub {
     owner = "VERT-sh";
     repo = "vertd";
-    tag = finalAttrs.version;
-    hash = "sha256-ECUNUzmrVKbu5+37Wyn2KKqr/0t4serUOTZVPw0orTs=";
+    rev = "e8219120ecb4bc23809f65dae19581b55384eb98";
+    hash = "sha256-voYJ9gJpJ5LmBFDRfbOhdisqd1SSPZGYGVFeQiA/0o8=";
   };
 
-  cargoHash = "sha256-jEu3tjo7w/gP1zjNpvfI1W1/wgvjsjzfgqKLzQh2jIo=";
+  cargoHash = "sha256-QTZDoOiRBYfhqvU2/U730kRq2O8DNhjA+qlcbqWITZU=";
 
   nativeBuildInputs = [
     pkg-config
   ];
 
   buildInputs = [
+    openssl
     vulkan-loader
     zstd
   ];
@@ -37,7 +39,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     ZSTD_SYS_USE_PKG_CONFIG = true;
   };
 
-  passthru.updateScript = nix-update-script { };
+  passthru.updateScript = nix-update-script { extraArgs = [ "--version=branch=main" ]; };
 
   meta = {
     description = "VERT's solution to crappy video conversion services";
@@ -46,4 +48,4 @@ rustPlatform.buildRustPackage (finalAttrs: {
     maintainers = with lib.maintainers; [ bartoostveen ];
     mainProgram = "vertd";
   };
-})
+}
