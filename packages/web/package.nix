@@ -36,13 +36,13 @@ let
 in
 bun2nix.mkDerivation (finalAttrs: {
   pname = "vert";
-  version = "0-unstable-2026-08-10";
+  version = "0-unstable-2026-08-31";
 
   src = fetchFromGitHub {
     owner = "VERT-sh";
     repo = "VERT";
-    rev = "e0ffd34310f9c988b16e22334b13e18de030b0ae";
-    hash = "sha256-hHVr3KRKyx1reOr1KZPLEj3eDcA5qZLI0lWWcHBmPks=";
+    rev = "cc7b5a54d5e9c797b377db47b9bdfbb561707783";
+    hash = "sha256-OsaPHues1FRB96+AIYkKOc+qCYzeKuZPF7A3I56ppZs=";
   };
 
   patches = [ ./bun.lock.patch ];
