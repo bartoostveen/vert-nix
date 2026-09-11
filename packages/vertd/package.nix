@@ -11,7 +11,7 @@
 
 rustPlatform.buildRustPackage {
   pname = "vertd";
-  version = "nightly-352463e1ae65a5afd87e250309656f4f2062d76a-unstable-2026-09-01";
+  version = "nightly-352463e1ae65a5afd87e250309656f4f2062d76a-unstable-2026-09-11";
 
   __structuredAttrs = true;
   strictDeps = true;
@@ -19,8 +19,8 @@ rustPlatform.buildRustPackage {
   src = fetchFromGitHub {
     owner = "VERT-sh";
     repo = "vertd";
-    rev = "e8219120ecb4bc23809f65dae19581b55384eb98";
-    hash = "sha256-voYJ9gJpJ5LmBFDRfbOhdisqd1SSPZGYGVFeQiA/0o8=";
+    rev = "e94eca2b47237d4e1d698b3bd1162111edcd45c6";
+    hash = "sha256-/ksPeJ5ZdPBVTvxgK0B9aEPmHkBDbyCSn1Zjc8uUq/0=";
   };
 
   cargoHash = "sha256-QTZDoOiRBYfhqvU2/U730kRq2O8DNhjA+qlcbqWITZU=";
