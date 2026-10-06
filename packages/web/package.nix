@@ -87,7 +87,6 @@ bun2nix.mkDerivation (finalAttrs: {
     homepage = "https://github.com/VERT-sh/VERT";
     license = lib.licenses.agpl3Only;
     maintainers = with lib.maintainers; [ bartoostveen ];
-    mainProgram = "vert";
     platforms = lib.platforms.all;
   };
 })
