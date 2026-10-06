@@ -11,7 +11,7 @@
 
 rustPlatform.buildRustPackage {
   pname = "vertd";
-  version = "nightly-352463e1ae65a5afd87e250309656f4f2062d76a-unstable-2026-09-25";
+  version = "nightly-e50ad616c122b4f2bac7ea813677b56f4670fb06-unstable-2026-10-04";
 
   __structuredAttrs = true;
   strictDeps = true;
@@ -19,11 +19,11 @@ rustPlatform.buildRustPackage {
   src = fetchFromGitHub {
     owner = "VERT-sh";
     repo = "vertd";
-    rev = "24bff68d59c03e24914624ad78f7cc125b4870db";
-    hash = "sha256-wXKN22QLH21YGcYGCQ5S9IHW5RvrhZMrnRLVW1pZUf0=";
+    rev = "e50ad616c122b4f2bac7ea813677b56f4670fb06";
+    hash = "sha256-ssQQCNRRo3qZSPXVCMV7OGhRNOSr7jlqNMophVDF5M0=";
   };
 
-  cargoHash = "sha256-mcKh+95FYWR6HNAV76j928KHemfsPNMPeQLYB27c4xE=";
+  cargoHash = "sha256-SQswnq35oChsFvUNaovmKq0QDlnh7RCsGge/4EKdBoY=";
 
   nativeBuildInputs = [
     pkg-config
